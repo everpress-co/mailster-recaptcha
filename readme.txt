@@ -2,8 +2,8 @@
 Contributors: everpress, revaxarts
 Tags: mailster, form, forms, recaptcha, captcha, secure, revaxarts
 Requires at least: 3.8
-Tested up to: 4.7.2
-Stable tag: 1.0
+Tested up to: 4.7.3
+Stable tag: 1.0.1
 License: GPLv2 or later
 Author: revaxarts
 Author URI: https://mailster.co
@@ -23,6 +23,10 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 3. Go to Settings => Newsletter => reCaptcha™ and configure the plugin
 
 == Changelog ==
+
+= 1.0.1 =
+
+* fixed: issue where check box doesn't get recognized
 
 = 1.0 =
 * initial release
