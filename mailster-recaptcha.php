@@ -3,7 +3,7 @@
 Plugin Name: Mailster reCaptcha
 Plugin URI: http://rxa.li/mailster?utm_campaign=wporg&utm_source=MailsterRrcCaptcha™+for+Forms
 Description: Adds a reCaptcha™ to your Mailster Subscription forms
-Version: 1.0.1
+Version: 1.1
 Author: revaxarts.com
 Author URI: https://mailster.co
 Text Domain: mailster-recaptcha
@@ -34,13 +34,14 @@ class MailsterRecaptcha {
 		if ( function_exists( 'mailster' ) ) {
 
 			$defaults = array(
-				'reCaptcha_new' => true,
 				'reCaptcha_public' => '',
 				'reCaptcha_private' => '',
 				'reCaptcha_error_msg' => __( 'Please proof that you are human!', 'mailster-recaptcha' ),
 				'reCaptcha_loggedin' => false,
 				'reCaptcha_forms' => array(),
 				'reCaptcha_language' => 'en',
+				'reCaptcha_theme' => 'light',
+				'reCaptcha_size' => 'normal',
 			);
 
 			$mailster_options = mailster_options();
@@ -86,11 +87,7 @@ class MailsterRecaptcha {
 	<table class="form-table">
 		<tr valign="top">
 			<th scope="row">&nbsp;</th>
-			<td><p class="description"><?php echo sprintf( __( 'You have to %s to get your public and private keys', 'mailster-recaptcha' ), '<a href="https://www.google.com/recaptcha/admin" class="external">' . __( 'sign up', 'mailster-recaptcha' ) . '</a>' ); ?></p></td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><?php _e( 'new reCaptcha' ,'mailster-recaptcha' ) ?></th>
-			<td><label><input type="hidden" name="mailster_options[reCaptcha_new]" value=""><input type="checkbox" name="mailster_options[reCaptcha_new]" value="1" <?php checked( mailster_option( 'reCaptcha_new' ) ); ?>> <?php _e( 'use the new reCaptcha™', 'mailster-recaptcha' ) ?></label></td>
+			<td><p class="description"><?php printf( __( 'You have to %s to get your public and private keys', 'mailster-recaptcha' ), '<a href="https://www.google.com/recaptcha/admin" class="external">' . __( 'sign up', 'mailster-recaptcha' ) . '</a>' ); ?></p></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e( 'Site Key' ,'mailster-recaptcha' ) ?></th>
@@ -112,7 +109,7 @@ class MailsterRecaptcha {
 			<th scope="row"><?php _e( 'Forms' ,'mailster-recaptcha' ) ?><p class="description"><?php _e( 'select forms which require a captcha', 'mailster-recaptcha' ); ?></p></th>
 			<td>
 				<ul>
-				<?php $forms = mailster( 'form' )->get_all();
+				<?php $forms = mailster( 'forms' )->get_all();
 					$enabled = mailster_option( 'reCaptcha_forms', array() );
 				foreach ( $forms as $form ) {
 					$form = (object) $form;
@@ -125,7 +122,7 @@ class MailsterRecaptcha {
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><?php _e( 'Language' ,'mailster-recaptcha' ) ?></th>
+			<th scope="row"><?php _e( 'Language', 'mailster-recaptcha' ) ?></th>
 			<td><select name="mailster_options[reCaptcha_language]">
 				<?php $languages = array( 'ar' => 'Arabic', 'bg' => 'Bulgarian', 'ca' => 'Catalan', 'zh-CN' => 'Chinese (Simplified)', 'zh-TW' => 'Chinese (Traditional)', 'hr' => 'Croatian', 'cs' => 'Czech', 'da' => 'Danish', 'nl' => 'Dutch', 'en-GB' => 'English (UK)', 'en' => 'English (US)', 'fil' => 'Filipino', 'fi' => 'Finnish', 'fr' => 'French', 'fr-CA' => 'French (Canadian)', 'de' => 'German', 'de-AT' => 'German (Austria)', 'de-CH' => 'German (Switzerland)', 'el' => 'Greek', 'iw' => 'Hebrew', 'hi' => 'Hindi', 'hu' => 'Hungarain', 'id' => 'Indonesian', 'it' => 'Italian', 'ja' => 'Japanese', 'ko' => 'Korean', 'lv' => 'Latvian', 'lt' => 'Lithuanian', 'no' => 'Norwegian', 'fa' => 'Persian', 'pl' => 'Polish', 'pt' => 'Portuguese', 'pt-BR' => 'Portuguese (Brazil)', 'pt-PT' => 'Portuguese (Portugal)', 'ro' => 'Romanian', 'ru' => 'Russian', 'sr' => 'Serbian', 'sk' => 'Slovak', 'sl' => 'Slovenian', 'es' => 'Spanish', 'es-419' => 'Spanish (Latin America)', 'sv' => 'Swedish', 'th' => 'Thai', 'tr' => 'Turkish', 'uk' => 'Uk rainian', 'vi' => 'Vietnamese' );
 					$current = mailster_option( 'reCaptcha_language' );
@@ -133,6 +130,28 @@ class MailsterRecaptcha {
 					echo '<option value="' . $key . '" ' . (selected( $key, $current, false )) . '>' . $name . '</option>';
 				}
 
+				?>
+			</select></td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><?php _e( 'Theme', 'mailster-recaptcha' ) ?></th>
+			<td><select name="mailster_options[reCaptcha_theme]">
+				<?php $themes = array( 'light' => __( 'Light', 'mailster-recaptcha' ), 'dark' => __( 'Dark', 'mailster-recaptcha' ) );
+					$current = mailster_option( 'reCaptcha_theme' );
+				foreach ( $themes as $key => $name ) {
+					echo '<option value="' . $key . '" ' . (selected( $key, $current, false )) . '>' . $name . '</option>';
+				}
+				?>
+			</select></td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><?php _e( 'Size', 'mailster-recaptcha' ) ?></th>
+			<td><select name="mailster_options[reCaptcha_size]">
+				<?php $sizes = array( 'normal' => __( 'Normal', 'mailster-recaptcha' ), 'compact' => __( 'Compact', 'mailster-recaptcha' ) );
+					$current = mailster_option( 'reCaptcha_size' );
+				foreach ( $sizes as $key => $name ) {
+					echo '<option value="' . $key . '" ' . (selected( $key, $current, false )) . '>' . $name . '</option>';
+				}
 				?>
 			</select></td>
 		</tr>
@@ -162,22 +181,8 @@ class MailsterRecaptcha {
 
 	public function get_field( $html ) {
 
-		if ( mailster_option( 'reCaptcha_new' ) ) {
-
-			wp_register_script( 'mailster_recaptcha_script', 'https://www.google.com/recaptcha/api.js?hl=' . mailster_option( 'reCaptcha_language' ) );
-			wp_enqueue_script( 'mailster_recaptcha_script' );
-
-			$html = '<div class="mailster-wrapper mailster-_recaptcha-wrapper"><div class="g-recaptcha" data-sitekey="' . mailster_option( 'reCaptcha_public' ) . '"></div></div>';
-
-		} else {
-
-			require_once $this->plugin_path . '/recaptcha/recaptchalib.php';
-			$publickey = mailster_option( 'reCaptcha_public' );
-			$html = "<script type='text/javascript'>if(!RecaptchaOptions) var RecaptchaOptions = {theme : '" . mailster_option( 'reCaptcha_theme' ) . "', lang : '" . mailster_option( 'reCaptcha_language' ) . "'}</script>";
-
-			$html .= recaptcha_get_html( $publickey, null, is_ssl() );
-
-		}
+		wp_enqueue_script( 'mailster_recaptcha_script', 'https://www.google.com/recaptcha/api.js?hl=' . mailster_option( 'reCaptcha_language' ), array(), '1.0', true );
+		$html = '<div class="mailster-wrapper mailster-_recaptcha-wrapper"><div class="g-recaptcha" data-sitekey="' . mailster_option( 'reCaptcha_public' ) . '" data-theme="' . mailster_option( 'reCaptcha_theme', 'light' ) . '" data-size="' . mailster_option( 'reCaptcha_size', 'normal' ) . '"></div></div>';
 
 		return $html;
 
@@ -189,45 +194,29 @@ class MailsterRecaptcha {
 			return $object;
 		}
 
-		$formid = (isset( $_POST['formid'] )) ? intval( $_POST['formid'] ) : 0;
+		$formid = (isset( $_POST['formid'] )) ? intval( $_POST['formid'] ) : 1;
 
 		if ( ! in_array( $formid, mailster_option( 'reCaptcha_forms', array() ) ) ) {
 			return $object;
 		}
-
 		if ( isset( $_POST['g-recaptcha-response'] ) ) {
+			$url = add_query_arg(array(
+				'secret' => mailster_option( 'reCaptcha_private' ),
+				'response' => $_POST['g-recaptcha-response'],
+			), 'https://www.google.com/recaptcha/api/siteverify');
 
-			if ( ! empty( $_POST['g-recaptcha-response'] ) ) {
-				$url = add_query_arg(array(
-					'secret' => mailster_option( 'reCaptcha_private' ),
-					'response' => $_POST['g-recaptcha-response'],
-				), 'https://www.google.com/recaptcha/api/siteverify');
+			$response = wp_remote_get( $url );
 
-				$response = wp_remote_get( $url );
-
-				if ( is_wp_error( $response ) ) {
-					$object['errors']['_recaptcha'] = $response->get_error_message();
-				} else {
-					$response = json_decode( wp_remote_retrieve_body( $response ) );
-					if ( ! $response->success ) {
-						$object['errors']['_recaptcha'] = mailster_option( 'reCaptcha_error_msg' );
-					}
-				}
+			if ( is_wp_error( $response ) ) {
+				$object['errors']['_recaptcha'] = $response->get_error_message();
 			} else {
-				$object['errors']['_recaptcha'] = mailster_option( 'reCaptcha_error_msg' );
+				$response = json_decode( wp_remote_retrieve_body( $response ) );
+				if ( ! $response->success ) {
+					$object['errors']['_recaptcha'] = mailster_option( 'reCaptcha_error_msg' );
+				}
 			}
 		} else {
-			require_once $this->plugin_path . '/recaptcha/recaptchalib.php';
-			$privatekey = mailster_option( 'reCaptcha_private' );
-			$resp = recaptcha_check_answer($privatekey,
-				$_SERVER['REMOTE_ADDR'],
-				$_POST['recaptcha_challenge_field'],
-				$_POST['recaptcha_response_field']
-			);
-
-			if ( ! $resp->is_valid ) {
-				$object['errors']['_recaptcha'] = mailster_option( 'reCaptcha_error_msg' );
-			}
+			$object['errors']['_recaptcha'] = mailster_option( 'reCaptcha_error_msg' );
 		}
 
 		return $object;
