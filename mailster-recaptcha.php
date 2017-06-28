@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Mailster reCaptcha
-Plugin URI: http://rxa.li/mailster?utm_campaign=wporg&utm_source=MailsterRrcCaptcha™+for+Forms
+Plugin URI: https://mailster.co/?utm_campaign=wporg&utm_source=MailsterRrcCaptcha™+for+Forms
 Description: Adds a reCaptcha™ to your Mailster Subscription forms
 Version: 1.1
-Author: revaxarts.com
+Author: EverPress
 Author URI: https://mailster.co
 Text Domain: mailster-recaptcha
 License: GPLv2 or later

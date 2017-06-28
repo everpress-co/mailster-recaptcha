@@ -2,10 +2,10 @@
 Contributors: everpress, revaxarts
 Tags: mailster, form, recaptcha, captcha, secure
 Requires at least: 3.8
-Tested up to: 4.7.4
+Tested up to: 4.8
 Stable tag: 1.1
 License: GPLv2 or later
-Author: revaxarts
+Author: EverPress
 Author URI: https://mailster.co
 
 == Description ==
@@ -39,5 +39,5 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 
 == Additional Info One ==
 
-This Plugin requires [Mailster Newsletter Plugin for WordPress](http://rxa.li/mailster?utm_campaign=wporg&utm_source=Mailster+reCaptcha™+for+Forms)
+This Plugin requires [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=Mailster+reCaptcha™+for+Forms)
 
