@@ -3,7 +3,7 @@
 Plugin Name: Mailster reCaptcha
 Plugin URI: https://mailster.co/?utm_campaign=wporg&utm_source=MailsterRrcCaptcha™+for+Forms
 Description: Adds a reCaptcha™ to your Mailster Subscription forms
-Version: 1.1
+Version: 1.1.1
 Author: EverPress
 Author URI: https://mailster.co
 Text Domain: mailster-recaptcha
@@ -147,8 +147,12 @@ class MailsterRecaptcha {
 		<tr valign="top">
 			<th scope="row"><?php _e( 'Size', 'mailster-recaptcha' ) ?></th>
 			<td><select name="mailster_options[reCaptcha_size]">
-				<?php $sizes = array( 'normal' => __( 'Normal', 'mailster-recaptcha' ), 'compact' => __( 'Compact', 'mailster-recaptcha' ) );
-					$current = mailster_option( 'reCaptcha_size' );
+				<?php
+				$sizes = array(
+					'normal' => __( 'Normal', 'mailster-recaptcha' ),
+					'compact' => __( 'Compact', 'mailster-recaptcha' ),
+				);
+				$current = mailster_option( 'reCaptcha_size' );
 				foreach ( $sizes as $key => $name ) {
 					echo '<option value="' . $key . '" ' . (selected( $key, $current, false )) . '>' . $name . '</option>';
 				}
@@ -162,7 +166,7 @@ class MailsterRecaptcha {
 
 	public function form_fields( $fields, $formid, $form ) {
 
-		if ( is_user_logged_in() && mailster_option( 'reCaptcha_loggedin' ) ) {
+		if ( is_user_logged_in() && mailster_option( 'reCaptcha_loggedin' ) && ! is_admin() ) {
 			return $fields;
 		}
 
@@ -184,6 +188,7 @@ class MailsterRecaptcha {
 		wp_enqueue_script( 'mailster_recaptcha_script', 'https://www.google.com/recaptcha/api.js?hl=' . mailster_option( 'reCaptcha_language' ), array(), '1.0', true );
 		$html = '<div class="mailster-wrapper mailster-_recaptcha-wrapper"><div class="g-recaptcha" data-sitekey="' . mailster_option( 'reCaptcha_public' ) . '" data-theme="' . mailster_option( 'reCaptcha_theme', 'light' ) . '" data-size="' . mailster_option( 'reCaptcha_size', 'normal' ) . '"></div></div>';
 
+		wp_print_scripts( 'mailster_recaptcha_script' );
 		return $html;
 
 	}
@@ -194,7 +199,7 @@ class MailsterRecaptcha {
 			return $object;
 		}
 
-		$formid = (isset( $_POST['formid'] )) ? intval( $_POST['formid'] ) : 1;
+		$formid = isset( $_POST['formid'] ) ? intval( $_POST['formid'] ) : 1;
 
 		if ( ! in_array( $formid, mailster_option( 'reCaptcha_forms', array() ) ) ) {
 			return $object;
