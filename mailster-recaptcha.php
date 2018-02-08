@@ -174,7 +174,7 @@ class MailsterRecaptcha {
 			return $fields;
 		}
 
-		$position = count( $fields ) -1;
+		$position = count( $fields ) - 1;
 		$fields = array_slice( $fields, 0, $position, true ) +
 					array( '_recaptcha' => $this->get_field( $form ) ) +
 					array_slice( $fields, $position, null, true );
