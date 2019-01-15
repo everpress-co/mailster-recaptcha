@@ -3,7 +3,7 @@
 Plugin Name: Mailster reCaptcha
 Plugin URI: https://mailster.co/?utm_campaign=wporg&utm_source=MailsterRrcCaptcha™+for+Forms
 Description: Adds a reCaptcha™ to your Mailster Subscription forms
-Version: 1.1.1
+Version: 1.2
 Author: EverPress
 Author URI: https://mailster.co
 Text Domain: mailster-recaptcha
@@ -36,6 +36,7 @@ class MailsterRecaptcha {
 			$defaults = array(
 				'reCaptcha_public' => '',
 				'reCaptcha_private' => '',
+				'reCaptcha_v3' => true,
 				'reCaptcha_error_msg' => __( 'Please proof that you are human!', 'mailster-recaptcha' ),
 				'reCaptcha_loggedin' => false,
 				'reCaptcha_forms' => array(),
@@ -96,6 +97,10 @@ class MailsterRecaptcha {
 		<tr valign="top">
 			<th scope="row"><?php _e( 'Secret Key' ,'mailster-recaptcha' ) ?></th>
 			<td><p><input type="text" name="mailster_options[reCaptcha_private]" value="<?php echo esc_attr( mailster_option( 'reCaptcha_private' ) ) ?>" class="large-text"></p></td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><?php _e( 'v3' ,'mailster-recaptcha' ); ?></th>
+			<td><label><input type="hidden" name="mailster_options[reCaptcha_v3]" value=""><input type="checkbox" name="mailster_options[reCaptcha_v3]" value="1" <?php checked( mailster_option( 'reCaptcha_v3' ) ); ?>> <?php _e( 'use version 3 of reCaptcha', 'mailster-recaptcha' ) ?></label></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e( 'Error Message' ,'mailster-recaptcha' ) ?></th>
@@ -183,10 +188,22 @@ class MailsterRecaptcha {
 
 	}
 
-	public function get_field( $html ) {
+	public function get_field( $form ) {
 
-		wp_enqueue_script( 'mailster_recaptcha_script', 'https://www.google.com/recaptcha/api.js?hl=' . mailster_option( 'reCaptcha_language' ), array(), '1.0', true );
-		$html = '<div class="mailster-wrapper mailster-_recaptcha-wrapper"><div class="g-recaptcha" data-sitekey="' . mailster_option( 'reCaptcha_public' ) . '" data-theme="' . mailster_option( 'reCaptcha_theme', 'light' ) . '" data-size="' . mailster_option( 'reCaptcha_size', 'normal' ) . '"></div></div>';
+		if ( mailster_option( 'reCaptcha_v3' ) ) :
+
+			wp_enqueue_script( 'mailster_recaptcha_script', 'https://www.google.com/recaptcha/api.js?render=' . mailster_option( 'reCaptcha_public' ) . '&hl=' . mailster_option( 'reCaptcha_language' ), array(), '3.0', true );
+
+			$identifieer = 'mailster-_recaptcha-' . $form->ID . '-' . uniqid();
+
+			wp_add_inline_script( 'mailster_recaptcha_script', "grecaptcha.ready(function(){grecaptcha.execute('" . mailster_option( 'reCaptcha_public' ) . "', {action:'mailster_form_" . $form->ID . "_submit'}).then(function(token){document.getElementById('" . $identifieer . "').value = token; });});" );
+
+			$html = '<div class="mailster-wrapper mailster-_recaptcha-wrapper"><input name="g-recaptcha-response" type="hidden" id="' . $identifieer . '"></div>';
+		else :
+			wp_enqueue_script( 'mailster_recaptcha_script', 'https://www.google.com/recaptcha/api.js?hl=' . mailster_option( 'reCaptcha_language' ), array(), '2.0', true );
+			$html = '<div class="mailster-wrapper mailster-_recaptcha-wrapper"><div class="g-recaptcha" data-sitekey="' . mailster_option( 'reCaptcha_public' ) . '" data-theme="' . mailster_option( 'reCaptcha_theme', 'light' ) . '" data-size="' . mailster_option( 'reCaptcha_size', 'normal' ) . '"></div></div>';
+
+		endif;
 
 		wp_print_scripts( 'mailster_recaptcha_script' );
 		return $html;
