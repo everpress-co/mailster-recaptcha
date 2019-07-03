@@ -2,8 +2,8 @@
 Contributors: everpress
 Tags: mailster, form, recaptcha, captcha, secure
 Requires at least: 3.8
-Tested up to: 5.0
-Stable tag: 1.2
+Tested up to: 5.2
+Stable tag: 1.3
 License: GPLv2 or later
 Author: EverPress
 Author URI: https://mailster.co
@@ -25,6 +25,10 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 1. Option Interface.
 
 == Changelog ==
+
+= 1.3 =
+* allow multiple forms on a single page (thanks to A. Grundner)
+* small code improvements
 
 = 1.2 =
 * added: support for reCpatcha API v3 (default)

@@ -3,7 +3,7 @@
 Plugin Name: Mailster reCaptcha
 Plugin URI: https://mailster.co/?utm_campaign=wporg&utm_source=MailsterRrcCaptcha™+for+Forms
 Description: Adds a reCaptcha™ to your Mailster Subscription forms
-Version: 1.2
+Version: 1.3
 Author: EverPress
 Author URI: https://mailster.co
 Text Domain: mailster-recaptcha
@@ -70,7 +70,7 @@ class MailsterRecaptcha {
 
 		}
 		add_filter( 'mailster_form_fields', array( &$this, 'form_fields' ), 10, 3 );
-		add_filter( 'mailster_submit', array( &$this, 'check_captcha' ), 10, 1 );
+		add_filter( 'mailster_verify_subscriber', array( &$this, 'check_captcha' ), 10, 1 );
 	}
 
 	public function settings_tab( $settings ) {
@@ -196,7 +196,7 @@ class MailsterRecaptcha {
 
 			$identifieer = 'mailster-_recaptcha-' . $form->ID . '-' . uniqid();
 
-			wp_add_inline_script( 'mailster_recaptcha_script', "grecaptcha.ready(function(){grecaptcha.execute('" . mailster_option( 'reCaptcha_public' ) . "', {action:'mailster_form_" . $form->ID . "_submit'}).then(function(token){document.getElementById('" . $identifieer . "').value = token; });});" );
+			wp_add_inline_script( 'mailster_recaptcha_script', "grecaptcha.ready(function(){grecaptcha.execute('" . mailster_option( 'reCaptcha_public' ) . "', {action:'mailster_form_" . $form->ID . "_submit'}).then(function(token){var ri=document.getElementsByName('g-recaptcha-response');for (var i=0;i<ri.length;i++){ri[i].value = token;}});});" );
 
 			$html = '<div class="mailster-wrapper mailster-_recaptcha-wrapper"><input name="g-recaptcha-response" type="hidden" id="' . $identifieer . '"></div>';
 		else :
@@ -210,38 +210,41 @@ class MailsterRecaptcha {
 
 	}
 
-	public function check_captcha( $object ) {
+	public function check_captcha( $entry ) {
 
 		if ( is_user_logged_in() && mailster_option( 'reCaptcha_loggedin' ) ) {
-			return $object;
+			return $entry;
 		}
 
 		$formid = isset( $_POST['formid'] ) ? intval( $_POST['formid'] ) : 1;
 
 		if ( ! in_array( $formid, mailster_option( 'reCaptcha_forms', array() ) ) ) {
-			return $object;
+			return $entry;
 		}
 		if ( isset( $_POST['g-recaptcha-response'] ) ) {
-			$url = add_query_arg(array(
+
+			$body = array(
 				'secret' => mailster_option( 'reCaptcha_private' ),
 				'response' => $_POST['g-recaptcha-response'],
-			), 'https://www.google.com/recaptcha/api/siteverify');
+			);
 
-			$response = wp_remote_get( $url );
+			$url = 'https://www.google.com/recaptcha/api/siteverify';
+
+			$response = wp_remote_post( $url, array(
+				'body' => $body,
+			) );
 
 			if ( is_wp_error( $response ) ) {
-				$object['errors']['_recaptcha'] = $response->get_error_message();
+				return new WP_Error( '_recaptcha', $response->get_error_message() );
 			} else {
 				$response = json_decode( wp_remote_retrieve_body( $response ) );
 				if ( ! $response->success ) {
-					$object['errors']['_recaptcha'] = mailster_option( 'reCaptcha_error_msg' );
+					return new WP_Error( '_recaptcha', mailster_option( 'reCaptcha_error_msg' ) );
 				}
 			}
-		} else {
-			$object['errors']['_recaptcha'] = mailster_option( 'reCaptcha_error_msg' );
 		}
 
-		return $object;
+		return $entry;
 
 	}
 
