@@ -50,7 +50,7 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 = 1.0 =
 * initial release
 
-== Additional Info One ==
+== Additional Info ==
 
-This Plugin requires [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=Mailster+reCaptcha™+for+Forms)
+This Plugin requires [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=Mailster+reCaptcha+for+Forms&utm_medium=readme)
 
