@@ -3,7 +3,7 @@
 Plugin Name: Mailster reCaptcha
 Plugin URI: https://mailster.co/?utm_campaign=wporg&utm_source=MailsterRrcCaptcha™+for+Forms&utm_medium=plugin
 Description: Adds a reCaptcha™ to your Mailster Subscription forms
-Version: 1.4
+Version: 1.4.1
 Author: EverPress
 Author URI: https://mailster.co
 Text Domain: mailster-recaptcha
@@ -299,7 +299,7 @@ class MailsterRecaptcha {
 					return new WP_Error( '_recaptcha', mailster_option( 'reCaptcha_error_msg' ) );
 				}
 			}
-		} elseif ( ! is_admin() ) {
+		} elseif ( ! is_admin() && get_query_var( '_mailster_page' ) != 'confirm' ) {
 			return new WP_Error( '_recaptcha', mailster_option( 'reCaptcha_error_msg' ) );
 		}
 

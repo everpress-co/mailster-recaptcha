@@ -3,7 +3,7 @@ Contributors: everpress
 Tags: mailster, form, recaptcha, captcha, secure
 Requires at least: 3.8
 Tested up to: 5.3
-Stable tag: 1.4
+Stable tag: 1.4.1
 License: GPLv2 or later
 Author: EverPress
 Author URI: https://mailster.co
@@ -25,6 +25,9 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 1. Option Interface.
 
 == Changelog ==
+
+= 1.4.1 =
+* fixed: problem with confirmation if add on is enabled
 
 = 1.4 =
 * fixed: submitting form with with removed captcha field is no longer possible
