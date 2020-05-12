@@ -138,12 +138,7 @@ class MailsterRecaptcha {
 
 			$url = 'https://www.google.com/recaptcha/api/siteverify';
 
-			$response = wp_remote_post(
-				$url,
-				array(
-					'body' => $body,
-				)
-			);
+			$response = wp_remote_post( $url, array( 'body' => $body ) );
 
 			if ( is_wp_error( $response ) ) {
 				return new WP_Error( '_recaptcha', $response->get_error_message() );
