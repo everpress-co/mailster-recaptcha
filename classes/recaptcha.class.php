@@ -26,7 +26,7 @@ class MailsterRecaptcha {
 				'reCaptcha_public'    => '',
 				'reCaptcha_private'   => '',
 				'reCaptcha_v3'        => true,
-				'reCaptcha_error_msg' => __( 'Please proof that you are human!', 'mailster-recaptcha' ),
+				'reCaptcha_error_msg' => esc_html__( 'Please proof that you are human!', 'mailster-recaptcha' ),
 				'reCaptcha_loggedin'  => false,
 				'reCaptcha_forms'     => array(),
 				'reCaptcha_language'  => 'en',
