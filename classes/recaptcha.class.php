@@ -112,7 +112,10 @@ class MailsterRecaptcha {
 
 		endif;
 
-		wp_print_scripts( 'mailster_recaptcha_script' );
+		if ( did_action( 'mailster_form' ) ) {
+			wp_print_scripts( 'mailster_recaptcha_script' );
+		}
+
 		return $html;
 
 	}
