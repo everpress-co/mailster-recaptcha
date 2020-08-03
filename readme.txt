@@ -2,7 +2,7 @@
 Contributors: everpress
 Tags: mailster, form, recaptcha, captcha, secure
 Requires at least: 3.8
-Tested up to: 5.4
+Tested up to: 5.5
 Stable tag: 1.6
 License: GPLv2 or later
 Author: EverPress
