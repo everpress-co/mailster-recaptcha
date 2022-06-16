@@ -21,7 +21,10 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 
 ## Screenshots
 
-1. Option Interface.
+### 1. Option Interface.
+
+![Option Interface.](https://ps.w.org/mailster-recaptcha/assets/screenshot-1.png)
+
 
 ## Changelog
 
