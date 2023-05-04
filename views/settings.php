@@ -5,15 +5,11 @@
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php esc_html_e( 'Site Key', 'mailster-recaptcha' ); ?></th>
-			<td><p><input type="text" name="mailster_options[reCaptcha_public]" value="<?php echo esc_attr( mailster_option( 'reCaptcha_public' ) ); ?>" class="large-text"></p></td>
+			<td><p><input type="password" name="mailster_options[reCaptcha_public]" value="<?php echo esc_attr( mailster_option( 'reCaptcha_public' ) ); ?>" class="large-text"></p></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php esc_html_e( 'Secret Key', 'mailster-recaptcha' ); ?></th>
-			<td><p><input type="text" name="mailster_options[reCaptcha_private]" value="<?php echo esc_attr( mailster_option( 'reCaptcha_private' ) ); ?>" class="large-text"></p></td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><?php esc_html_e( 'v3', 'mailster-recaptcha' ); ?></th>
-			<td><label><input type="hidden" name="mailster_options[reCaptcha_v3]" value=""><input type="checkbox" name="mailster_options[reCaptcha_v3]" value="1" <?php checked( mailster_option( 'reCaptcha_v3' ) ); ?>> <?php esc_html_e( 'use version 3 of reCaptcha', 'mailster-recaptcha' ); ?></label></td>
+			<td><p><input type="password" name="mailster_options[reCaptcha_private]" value="<?php echo esc_attr( mailster_option( 'reCaptcha_private' ) ); ?>" class="large-text"></p></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php esc_html_e( 'Error Message', 'mailster-recaptcha' ); ?></th>
@@ -21,113 +17,40 @@
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php esc_html_e( 'Disable for logged in users', 'mailster-recaptcha' ); ?></th>
-			<td><label><input type="hidden" name="mailster_options[reCaptcha_loggedin]" value=""><input type="checkbox" name="mailster_options[reCaptcha_loggedin]" value="1" <?php checked( mailster_option( 'reCaptcha_loggedin' ) ); ?>> <?php esc_html_e( 'disable the reCaptcha™ for logged in users', 'mailster-recaptcha' ); ?></label></td>
+			<td><label><input type="hidden" name="mailster_options[reCaptcha_loggedin]" value=""><input type="checkbox" name="mailster_options[reCaptcha_loggedin]" value="1" <?php checked( mailster_option( 'reCaptcha_loggedin' ) ); ?>> <?php esc_html_e( 'disable the reCaptcha for logged in users', 'mailster-recaptcha' ); ?></label></td>
 		</tr>
+		<?php $block_forms = get_posts( 'post_type=newsletter_form' ); ?>
+		<?php if ( ! empty( $block_forms ) ) : ?>
 		<tr valign="top">
-			<th scope="row"><?php esc_html_e( 'Forms', 'mailster-recaptcha' ); ?><p class="description"><?php esc_html_e( 'select forms which require a captcha', 'mailster-recaptcha' ); ?></p></th>
+			<th scope="row"><?php esc_html_e( 'Block Forms', 'mailster-recaptcha' ); ?><p class="description"><?php esc_html_e( 'select forms which require a captcha', 'mailster-recaptcha' ); ?></p></th>
 			<td>
 				<ul>
 				<?php
-				$forms       = mailster( 'forms' )->get_all();
-					$enabled = mailster_option( 'reCaptcha_forms', array() );
-				foreach ( $forms as $form ) {
-					$form = (object) $form;
-					$id   = isset( $form->ID ) ? $form->ID : $form->id;
-					echo '<li><label><input name="mailster_options[reCaptcha_forms][]" type="checkbox" value="' . $id . '" ' . ( checked( in_array( $id, $enabled ), true, false ) ) . '>' . $form->name . '</label></li>';
+				$enabled = mailster_option( 'reCaptcha_block_forms', array() );
+				foreach ( $block_forms as $form ) {
+					echo '<li><label><input name="mailster_options[reCaptcha_block_forms][]" type="checkbox" value="' . esc_attr( $form->ID ) . '" ' . ( checked( in_array( $form->ID, $enabled ), true, false ) ) . '>' . esc_html( $form->post_title ) . '</label></li>';
 				}
 				?>
 				</ul>
 			</td>
 		</tr>
+		<?php endif; ?>
+		<?php $forms = mailster( 'forms' )->get_all(); ?>
+		<?php if ( ! empty( $forms ) ) : ?>
 		<tr valign="top">
-			<th scope="row"><?php esc_html_e( 'Language', 'mailster-recaptcha' ); ?></th>
-			<td><select name="mailster_options[reCaptcha_language]">
+			<th scope="row"><?php esc_html_e( 'Forms', 'mailster-recaptcha' ); ?><p class="description"><?php esc_html_e( 'select forms which require a captcha', 'mailster-recaptcha' ); ?></p></th>
+			<td>
+				<ul>
 				<?php
-				$languages = array(
-					'ar'     => 'Arabic',
-					'bg'     => 'Bulgarian',
-					'ca'     => 'Catalan',
-					'zh-CN'  => 'Chinese (Simplified)',
-					'zh-TW'  => 'Chinese (Traditional)',
-					'hr'     => 'Croatian',
-					'cs'     => 'Czech',
-					'da'     => 'Danish',
-					'nl'     => 'Dutch',
-					'en-GB'  => 'English (UK)',
-					'en'     => 'English (US)',
-					'fil'    => 'Filipino',
-					'fi'     => 'Finnish',
-					'fr'     => 'French',
-					'fr-CA'  => 'French (Canadian)',
-					'de'     => 'German',
-					'de-AT'  => 'German (Austria)',
-					'de-CH'  => 'German (Switzerland)',
-					'el'     => 'Greek',
-					'iw'     => 'Hebrew',
-					'hi'     => 'Hindi',
-					'hu'     => 'Hungarain',
-					'id'     => 'Indonesian',
-					'it'     => 'Italian',
-					'ja'     => 'Japanese',
-					'ko'     => 'Korean',
-					'lv'     => 'Latvian',
-					'lt'     => 'Lithuanian',
-					'no'     => 'Norwegian',
-					'fa'     => 'Persian',
-					'pl'     => 'Polish',
-					'pt'     => 'Portuguese',
-					'pt-BR'  => 'Portuguese (Brazil)',
-					'pt-PT'  => 'Portuguese (Portugal)',
-					'ro'     => 'Romanian',
-					'ru'     => 'Russian',
-					'sr'     => 'Serbian',
-					'sk'     => 'Slovak',
-					'sl'     => 'Slovenian',
-					'es'     => 'Spanish',
-					'es-419' => 'Spanish (Latin America)',
-					'sv'     => 'Swedish',
-					'th'     => 'Thai',
-					'tr'     => 'Turkish',
-					'uk'     => 'Uk rainian',
-					'vi'     => 'Vietnamese',
-				);
-
-				$current = mailster_option( 'reCaptcha_language' );
-				foreach ( $languages as $key => $name ) {
-					echo '<option value="' . $key . '" ' . ( selected( $key, $current, false ) ) . '>' . $name . '</option>';
-				}
-
-				?>
-			</select></td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><?php esc_html_e( 'Theme', 'mailster-recaptcha' ); ?></th>
-			<td><select name="mailster_options[reCaptcha_theme]">
-				<?php
-				$themes      = array(
-					'light' => esc_html__( 'Light', 'mailster-recaptcha' ),
-					'dark'  => esc_html__( 'Dark', 'mailster-recaptcha' ),
-				);
-					$current = mailster_option( 'reCaptcha_theme' );
-				foreach ( $themes as $key => $name ) {
-					echo '<option value="' . $key . '" ' . ( selected( $key, $current, false ) ) . '>' . $name . '</option>';
+				$enabled = mailster_option( 'reCaptcha_forms', array() );
+				foreach ( $forms as $form ) {
+					$form = (object) $form;
+					$id   = isset( $form->ID ) ? $form->ID : $form->id;
+					echo '<li><label><input name="mailster_options[reCaptcha_forms][]" type="checkbox" value="' . esc_attr( $id ) . '" ' . ( checked( in_array( $id, $enabled ), true, false ) ) . '>' . esc_html( $form->name ) . '</label></li>';
 				}
 				?>
-			</select></td>
+				</ul>
+			</td>
 		</tr>
-		<tr valign="top">
-			<th scope="row"><?php esc_html_e( 'Size', 'mailster-recaptcha' ); ?></th>
-			<td><select name="mailster_options[reCaptcha_size]">
-				<?php
-				$sizes   = array(
-					'normal'  => esc_html__( 'Normal', 'mailster-recaptcha' ),
-					'compact' => esc_html__( 'Compact', 'mailster-recaptcha' ),
-				);
-				$current = mailster_option( 'reCaptcha_size' );
-				foreach ( $sizes as $key => $name ) {
-					echo '<option value="' . $key . '" ' . ( selected( $key, $current, false ) ) . '>' . $name . '</option>';
-				}
-				?>
-			</select></td>
-		</tr>
+		<?php endif; ?>
 	</table>
