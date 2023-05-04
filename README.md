@@ -1,10 +1,10 @@
 # Mailster reCaptcha
 
-Contributors: everpress  
+Contributors: everpress, xaverb  
 Tags: mailster, form, recaptcha, captcha, secure  
 Requires at least: 3.8  
-Tested up to: 5.9  
-Stable tag: 1.6  
+Tested up to: 6.2  
+Stable tag: 2.0.0
 License: GPLv2 or later
 
 ## Description
@@ -21,53 +21,59 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 
 ## Screenshots
 
-1. Option Interface.
+### 1. Option Interface.
+
+![Option Interface.](https://ps.w.org/mailster-recaptcha/assets/screenshot-1.png)
 
 ## Changelog
 
+### 2.0.0
+
+- Supports now Mailster Block Forms
+
 ### 1.6
 
--   only output script if form has been rendered.
+- only output script if form has been rendered.
 
 ### 1.5
 
--   updated file structure
+- updated file structure
 
 ### 1.4.1
 
--   fixed: problem with confirmation if add on is enabled
+- fixed: problem with confirmation if add on is enabled
 
 ### 1.4
 
--   fixed: submitting form with with removed captcha field is no longer possible
+- fixed: submitting form with with removed captcha field is no longer possible
 
 ### 1.3
 
--   allow multiple forms on a single page (thanks to A. Grundner)
--   small code improvements
+- allow multiple forms on a single page (thanks to A. Grundner)
+- small code improvements
 
 ### 1.2
 
--   added: support for reCpatcha API v3 (default)
+- added: support for reCpatcha API v3 (default)
 
 ### 1.1.1
 
--   fixed: script tag not shown on HTML forms
+- fixed: script tag not shown on HTML forms
 
 ### 1.1
 
--   removed option for V1
--   added theme selection
--   added size selection
+- removed option for V1
+- added theme selection
+- added size selection
 
 ### 1.0.1
 
--   fixed: issue where check box doesn't get recognized
+- fixed: issue where check box doesn't get recognized
 
 ### 1.0
 
--   initial release
+- initial release
 
 ## Additional Info
 
-This Plugin requires [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=Mailster+reCaptcha+for+Forms&utm_medium=readme)
+This Plugin requires [Mailster Newsletter Plugin for WordPress](https://mailster.co/?utm_campaign=wporg&utm_source=wordpress.org&utm_medium=readme&utm_term=reCaptcha)
