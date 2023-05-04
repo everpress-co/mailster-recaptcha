@@ -16,6 +16,8 @@ class MailsterRecaptcha {
 		load_plugin_textdomain( 'mailster-recaptcha' );
 
 		add_action( 'init', array( &$this, 'init' ) );
+		add_action( 'init', array( &$this, 'register_post_meta' ) );
+
 	}
 
 	public function activate( $network_wide ) {
@@ -23,12 +25,11 @@ class MailsterRecaptcha {
 		if ( function_exists( 'mailster' ) ) {
 
 			$defaults = array(
-				'reCaptcha_public'      => '',
-				'reCaptcha_private'     => '',
-				'reCaptcha_error_msg'   => esc_html__( 'Captcha failed! Please reload the page and try again.', 'mailster-recaptcha' ),
-				'reCaptcha_loggedin'    => false,
-				'reCaptcha_forms'       => array(),
-				'reCaptcha_block_forms' => array(),
+				'reCaptcha_public'    => '',
+				'reCaptcha_private'   => '',
+				'reCaptcha_error_msg' => esc_html__( 'Captcha failed! Please reload the page and try again.', 'mailster-recaptcha' ),
+				'reCaptcha_loggedin'  => false,
+				'reCaptcha_forms'     => array(),
 			);
 
 			$mailster_options = mailster_options();
@@ -57,32 +58,53 @@ class MailsterRecaptcha {
 
 		}
 
-		add_filter( 'mailster_block_form', array( &$this, 'enqueued_script' ), 10, 2 );
-		add_filter( 'mailster_form', array( &$this, 'enqueued_script' ), 10, 2 );
+		add_filter( 'mailster_block_form', array( &$this, 'enqueue_script' ), 10, 3 );
+		add_filter( 'mailster_form', array( &$this, 'enqueue_script' ), 10, 3 );
 		add_filter( 'mailster_block_form_field_errors', array( &$this, 'form_submission_check' ), 10, 3 );
 		add_filter( 'mailster_submit', array( &$this, 'legacy_form_submission_check' ), 10, 3 );
 
 	}
 
-	public function enqueue_block_editor_assets() {
-		wp_enqueue_script( 'mailster_recaptcha_script', $this->plugin_url . 'assets/recaptcha.js', array(), MAILSTER_VERSION );
+	public function register_post_meta() {
+
+		register_post_meta(
+			'newsletter_form',
+			'recaptcha',
+			array(
+				'type'         => 'boolean',
+				'show_in_rest' => true,
+				'single'       => true,
+
+			)
+		);
 	}
 
-	public function enqueued_script( $output, $form ) {
+	public function enqueue_block_editor_assets() {
 
-		// for block forms
-		if ( is_array( $form ) ) {
-			$forms = mailster_option( 'reCaptcha_block_forms', array() );
-			$form  = $form['id'];
+		// only on block forms
+		if ( get_post_type() !== 'newsletter_form' ) {
+			return;
+		}
+
+		wp_enqueue_script( 'mailster_recaptcha_script', $this->plugin_url . 'build/inspector.js', array(), MAILSTER_VERSION );
+	}
+
+	public function enqueue_script( $output, $form_id, $args = null ) {
+
+		if ( is_array( $args ) ) {
+			$enabled = get_post_meta( $form_id, 'recaptcha', true );
+			if ( ! $enabled ) {
+				return $output;
+			}
+			$forms = array( $form_id );
 		} else {
 			$forms = mailster_option( 'reCaptcha_forms', array() );
-		}
 
-		// not for this form
-		if ( ! in_array( $form, $forms ) ) {
-			return $output;
+			if ( ! in_array( $form_id, $forms ) ) {
+				return $output;
+			}
 		}
-		wp_enqueue_script( 'mailster_recaptcha_script', $this->plugin_url . 'assets/recaptcha.js', array(), MAILSTER_VERSION );
+		wp_enqueue_script( 'mailster_recaptcha_script', $this->plugin_url . 'build/recaptcha.js', array(), MAILSTER_VERSION );
 
 		wp_localize_script(
 			'mailster_recaptcha_script',
@@ -119,11 +141,17 @@ class MailsterRecaptcha {
 			return $fields_errors;
 		}
 
-		$form_id = $request->get_param( '_formid' );
+		$url_params = $request->get_url_params();
 
-		$enabled = mailster_option( 'reCaptcha_block_forms', array() );
+		$form_id = (int) $url_params['id'];
+		// legacy
+		if ( ! $form_id ) {
+			$form_id = $request->get_param( '_formid' );
+		}
 
-		if ( ! in_array( $form_id, $enabled ) ) {
+		$enabled = get_post_meta( $form_id, 'recaptcha', true );
+
+		if ( ! $enabled ) {
 			return $fields_errors;
 		}
 

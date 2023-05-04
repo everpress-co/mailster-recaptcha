@@ -19,22 +19,7 @@
 			<th scope="row"><?php esc_html_e( 'Disable for logged in users', 'mailster-recaptcha' ); ?></th>
 			<td><label><input type="hidden" name="mailster_options[reCaptcha_loggedin]" value=""><input type="checkbox" name="mailster_options[reCaptcha_loggedin]" value="1" <?php checked( mailster_option( 'reCaptcha_loggedin' ) ); ?>> <?php esc_html_e( 'disable the reCaptcha for logged in users', 'mailster-recaptcha' ); ?></label></td>
 		</tr>
-		<?php $block_forms = get_posts( 'post_type=newsletter_form' ); ?>
-		<?php if ( ! empty( $block_forms ) ) : ?>
-		<tr valign="top">
-			<th scope="row"><?php esc_html_e( 'Block Forms', 'mailster-recaptcha' ); ?><p class="description"><?php esc_html_e( 'select forms which require a captcha', 'mailster-recaptcha' ); ?></p></th>
-			<td>
-				<ul>
-				<?php
-				$enabled = mailster_option( 'reCaptcha_block_forms', array() );
-				foreach ( $block_forms as $form ) {
-					echo '<li><label><input name="mailster_options[reCaptcha_block_forms][]" type="checkbox" value="' . esc_attr( $form->ID ) . '" ' . ( checked( in_array( $form->ID, $enabled ), true, false ) ) . '>' . esc_html( $form->post_title ) . '</label></li>';
-				}
-				?>
-				</ul>
-			</td>
-		</tr>
-		<?php endif; ?>
+
 		<?php $forms = mailster( 'forms' )->get_all(); ?>
 		<?php if ( ! empty( $forms ) ) : ?>
 		<tr valign="top">
