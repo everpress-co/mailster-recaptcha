@@ -54,7 +54,7 @@ class MailsterRecaptcha {
 			add_filter( 'mailster_setting_sections', array( &$this, 'settings_tab' ) );
 			add_action( 'mailster_section_tab_reCaptcha', array( &$this, 'settings' ) );
 
-			add_action( 'enqueue_block_editor_assets', array( &$this, 'enqueue_block_editor_assets' ) );
+			add_action( 'enqueue_block_assets', array( &$this, 'enqueue_block_editor_assets' ) );
 
 		}
 
@@ -68,7 +68,7 @@ class MailsterRecaptcha {
 	public function register_post_meta() {
 
 		register_post_meta(
-			'newsletter_form',
+			'mailster-form',
 			'recaptcha',
 			array(
 				'type'         => 'boolean',
@@ -82,7 +82,7 @@ class MailsterRecaptcha {
 	public function enqueue_block_editor_assets() {
 
 		// only on block forms
-		if ( get_post_type() !== 'newsletter_form' ) {
+		if ( get_post_type() !== 'mailster-form' ) {
 			return;
 		}
 
