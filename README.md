@@ -4,7 +4,7 @@ Contributors: everpress, xaverb
 Tags: mailster, form, recaptcha, captcha, secure  
 Requires at least: 3.8  
 Tested up to: 6.3  
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 
 ## Description
@@ -26,6 +26,10 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 ![Option Interface.](https://ps.w.org/mailster-recaptcha/assets/screenshot-1.png)
 
 ## Changelog
+
+### 2.0.1
+
+- fixed: issue with latest block forms plugin not shoing settings page
 
 ### 2.0.0
 
