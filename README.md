@@ -3,7 +3,7 @@
 Contributors: everpress, xaverb  
 Tags: mailster, form, recaptcha, captcha, secure  
 Requires at least: 3.8  
-Tested up to: 6.2  
+Tested up to: 6.3  
 Stable tag: 2.0.0
 License: GPLv2 or later
 

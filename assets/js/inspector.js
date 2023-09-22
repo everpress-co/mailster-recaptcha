@@ -17,10 +17,8 @@ import { CheckboxControl, PanelRow } from '@wordpress/components';
  * Internal dependencies
  */
 
-console.log('LOADED');
-
 function SettingsPanelPlugin() {
-	const [meta, setMeta] = useEntityProp('postType', 'newsletter_form', 'meta');
+	const [meta, setMeta] = useEntityProp('postType', 'mailster-form', 'meta');
 
 	const { recaptcha } = meta;
 
