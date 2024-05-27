@@ -1,9 +1,9 @@
 # Mailster reCaptcha
 
-Contributors: everpress, xaverb  
+Contributors: everpress, mailster, xaverb  
 Tags: mailster, form, recaptcha, captcha, secure  
-Requires at least: 3.8  
-Tested up to: 6.3  
+Requires at least: 6.0  
+Tested up to: 6.5  
 Stable tag: 2.0.1
 License: GPLv2 or later
 
@@ -21,7 +21,7 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 
 ## Screenshots
 
-### 1. Option Interface.
+### 1. Option Interface
 
 ![Option Interface.](https://ps.w.org/mailster-recaptcha/assets/screenshot-1.png)
 
