@@ -17,6 +17,13 @@ import { CheckboxControl, PanelRow } from '@wordpress/components';
  * Internal dependencies
  */
 
+/**
+ * Document settings panel to enable reCAPTCHA on a block form.
+ *
+ * @since 2.0.0
+ *
+ * @return {JSX.Element} Settings panel markup.
+ */
 function SettingsPanelPlugin() {
 	const [ meta, setMeta ] = useEntityProp(
 		'postType',

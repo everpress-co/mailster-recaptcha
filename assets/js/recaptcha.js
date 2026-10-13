@@ -17,6 +17,14 @@
 	document.addEventListener( 'mailster:load', handler );
 	document.addEventListener( 'mailster:open', handler );
 
+	/**
+	 * Initializes reCAPTCHA when a Mailster form is loaded or opened.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param {CustomEvent} event Mailster load/open event with form detail.
+	 * @return {void}
+	 */
 	function handler( event ) {
 		if ( ! event.detail.el ) {
 			return;
@@ -25,6 +33,14 @@
 		init( formEl );
 	}
 
+	/**
+	 * Loads the Google reCAPTCHA API once and queues the form for tokens.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param {HTMLElement} formEl Form element to protect.
+	 * @return {void}
+	 */
 	function init( formEl ) {
 		if ( ! script ) {
 			script = document.createElement( 'script' );
@@ -41,6 +57,14 @@
 		queue.push( formEl );
 	}
 
+	/**
+	 * Executes reCAPTCHA and stores the token on the form.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param {HTMLElement} formEl Form element to attach the token to.
+	 * @return {void}
+	 */
 	function recaptcha( formEl ) {
 		let el = formEl.querySelector( '.g-recaptcha-response' );
 		if ( ! el ) {
