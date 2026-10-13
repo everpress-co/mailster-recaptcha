@@ -27,6 +27,8 @@ You may also try [Mailster Cool Captcha for Forms](https://wordpress.org/plugins
 
 ## Changelog
 
+### Unreleased
+
 ### 2.0.1
 
 - fixed: issue with latest block forms plugin not shoing settings page

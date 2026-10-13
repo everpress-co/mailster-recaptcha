@@ -18,7 +18,9 @@
 	document.addEventListener( 'mailster:open', handler );
 
 	function handler( event ) {
-		if ( ! event.detail.el ) return;
+		if ( ! event.detail.el ) {
+			return;
+		}
 		const formEl = event.detail.el;
 		init( formEl );
 	}
