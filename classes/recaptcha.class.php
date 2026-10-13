@@ -1,10 +1,40 @@
 <?php
+/**
+ * Mailster reCaptcha integration class.
+ *
+ * @package Mailster_Recaptcha
+ */
 
+/**
+ * Integrates Google reCAPTCHA with Mailster subscription forms.
+ *
+ * @since 1.0
+ */
 class MailsterRecaptcha {
 
+	/**
+	 * Absolute filesystem path to the plugin directory.
+	 *
+	 * @since 1.0
+	 *
+	 * @var string
+	 */
 	private $plugin_path;
+
+	/**
+	 * URL to the plugin directory.
+	 *
+	 * @since 1.0
+	 *
+	 * @var string
+	 */
 	private $plugin_url;
 
+	/**
+	 * Sets up paths, activation hooks, and init callbacks.
+	 *
+	 * @since 1.0
+	 */
 	public function __construct() {
 
 		$this->plugin_path = plugin_dir_path( MAILSTER_RECAPTCHA_FILE );
@@ -17,10 +47,17 @@ class MailsterRecaptcha {
 
 		add_action( 'init', array( &$this, 'init' ) );
 		add_action( 'init', array( &$this, 'register_post_meta' ) );
-
 	}
 
-	public function activate( $network_wide ) {
+	/**
+	 * Seeds default reCAPTCHA options on plugin activation.
+	 *
+	 * @since 1.0
+	 *
+	 * @param bool $network_wide Optional. Whether the plugin is network-activated. Default false.
+	 * @return void
+	 */
+	public function activate( $network_wide ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- Hook signature.
 
 		if ( function_exists( 'mailster' ) ) {
 
@@ -40,13 +77,26 @@ class MailsterRecaptcha {
 				}
 			}
 		}
-
 	}
 
-	public function deactivate( $network_wide ) {
-
+	/**
+	 * Runs on plugin deactivation.
+	 *
+	 * @since 1.0
+	 *
+	 * @param bool $network_wide Optional. Whether the plugin was network-activated. Default false.
+	 * @return void
+	 */
+	public function deactivate( $network_wide ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- Hook signature.
 	}
 
+	/**
+	 * Registers admin settings, editor assets, and form filters.
+	 *
+	 * @since 1.0
+	 *
+	 * @return void
+	 */
 	public function init() {
 
 		if ( is_admin() ) {
@@ -62,9 +112,15 @@ class MailsterRecaptcha {
 		add_filter( 'mailster_form', array( &$this, 'enqueue_script' ), 10, 3 );
 		add_filter( 'mailster_block_form_field_errors', array( &$this, 'form_submission_check' ), 10, 3 );
 		add_filter( 'mailster_submit', array( &$this, 'legacy_form_submission_check' ), 10, 3 );
-
 	}
 
+	/**
+	 * Registers the recaptcha post meta for block forms.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return void
+	 */
 	public function register_post_meta() {
 
 		register_post_meta(
@@ -79,16 +135,33 @@ class MailsterRecaptcha {
 		);
 	}
 
+	/**
+	 * Enqueues the block editor inspector script on form edit screens.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return void
+	 */
 	public function enqueue_block_editor_assets() {
 
-		// only on block forms
+		// Only on block forms.
 		if ( get_post_type() !== 'mailster-form' ) {
 			return;
 		}
 
-		wp_enqueue_script( 'mailster_recaptcha_script', $this->plugin_url . 'build/inspector.js', array(), MAILSTER_VERSION );
+		wp_enqueue_script( 'mailster_recaptcha_script', $this->plugin_url . 'build/inspector.js', array(), MAILSTER_VERSION, true );
 	}
 
+	/**
+	 * Enqueues and localizes the front-end reCAPTCHA script for enabled forms.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string     $output  Form HTML output.
+	 * @param int        $form_id Form ID.
+	 * @param array|null $args    Optional. Block form args when present; null for legacy forms. Default null.
+	 * @return string Unmodified form HTML output.
+	 */
 	public function enqueue_script( $output, $form_id, $args = null ) {
 
 		if ( is_array( $args ) ) {
@@ -96,15 +169,15 @@ class MailsterRecaptcha {
 			if ( ! $enabled ) {
 				return $output;
 			}
-			$forms = array( $form_id );
+			$forms = array( (int) $form_id );
 		} else {
-			$forms = mailster_option( 'reCaptcha_forms', array() );
+			$forms = array_map( 'intval', (array) mailster_option( 'reCaptcha_forms', array() ) );
 
-			if ( ! in_array( $form_id, $forms ) ) {
+			if ( ! in_array( (int) $form_id, $forms, true ) ) {
 				return $output;
 			}
 		}
-		wp_enqueue_script( 'mailster_recaptcha_script', $this->plugin_url . 'build/recaptcha.js', array(), MAILSTER_VERSION );
+		wp_enqueue_script( 'mailster_recaptcha_script', $this->plugin_url . 'build/recaptcha.js', array(), MAILSTER_VERSION, true );
 
 		wp_localize_script(
 			'mailster_recaptcha_script',
@@ -117,6 +190,14 @@ class MailsterRecaptcha {
 		return $output;
 	}
 
+	/**
+	 * Inserts the reCaptcha settings section into Mailster settings tabs.
+	 *
+	 * @since 1.0
+	 *
+	 * @param array $settings Existing settings section map.
+	 * @return array Modified settings sections including reCaptcha.
+	 */
 	public function settings_tab( $settings ) {
 
 		$position = 4;
@@ -127,11 +208,28 @@ class MailsterRecaptcha {
 		return $settings;
 	}
 
+	/**
+	 * Renders the reCaptcha settings section view.
+	 *
+	 * @since 1.0
+	 *
+	 * @return void
+	 */
 	public function settings() {
 		include $this->plugin_path . '/views/settings.php';
 	}
 
-	public function form_submission_check( $fields_errors, $entry, $request ) {
+	/**
+	 * Validates reCAPTCHA on block form submissions.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array           $fields_errors Existing field errors.
+	 * @param array           $entry         Submitted entry data.
+	 * @param WP_REST_Request $request       REST request for the submission.
+	 * @return array Field errors, possibly including a reCAPTCHA error.
+	 */
+	public function form_submission_check( $fields_errors, $entry, $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Filter signature.
 
 		if ( is_user_logged_in() && mailster_option( 'reCaptcha_loggedin' ) ) {
 			return $fields_errors;
@@ -144,7 +242,7 @@ class MailsterRecaptcha {
 		$url_params = $request->get_url_params();
 
 		$form_id = (int) $url_params['id'];
-		// legacy
+		// Legacy form ID param.
 		if ( ! $form_id ) {
 			$form_id = $request->get_param( '_formid' );
 		}
@@ -166,33 +264,48 @@ class MailsterRecaptcha {
 		return $fields_errors;
 	}
 
-	public function legacy_form_submission_check( $object ) {
+	/**
+	 * Validates reCAPTCHA on legacy form submissions.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $submission Submission result with optional errors.
+	 * @return array Modified submission result.
+	 */
+	public function legacy_form_submission_check( $submission ) {
 
 		if ( is_user_logged_in() && mailster_option( 'reCaptcha_loggedin' ) ) {
-			return $object;
+			return $submission;
 		}
 
-		$formid = isset( $_POST['formid'] ) ? intval( $_POST['formid'] ) : 1;
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by Mailster form submit handler.
+		$formid = isset( $_POST['formid'] ) ? absint( wp_unslash( $_POST['formid'] ) ) : 1;
 
-		if ( ! in_array( $formid, mailster_option( 'reCaptcha_forms', array() ) ) ) {
-			return $object;
+		if ( ! in_array( $formid, array_map( 'intval', (array) mailster_option( 'reCaptcha_forms', array() ) ), true ) ) {
+			return $submission;
 		}
 
 		if ( isset( $_POST['_g-recaptcha-response'] ) ) {
 
-			$result = $this->check_captcha( $_POST['_g-recaptcha-response'] );
+			$result = $this->check_captcha( sanitize_text_field( wp_unslash( $_POST['_g-recaptcha-response'] ) ) );
 
 			if ( is_wp_error( $result ) ) {
-				$object['errors'][ $result->get_error_code() ] = $result->get_error_message();
+				$submission['errors'][ $result->get_error_code() ] = $result->get_error_message();
 			}
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
-		return $object;
-
+		return $submission;
 	}
 
-
-
+	/**
+	 * Verifies a reCAPTCHA response token with Google.
+	 *
+	 * @since 1.0
+	 *
+	 * @param string $response reCAPTCHA response token from the client.
+	 * @return true|WP_Error True on success, WP_Error on failure.
+	 */
 	private function check_captcha( $response ) {
 
 		$body = array(
@@ -214,8 +327,5 @@ class MailsterRecaptcha {
 		}
 
 		return true;
-
 	}
-
-
 }

@@ -1,60 +1,88 @@
-(function () {
+/* global mailster_recaptcha, grecaptcha */
+/* eslint-disable camelcase */
+( function () {
 	'use strict';
 
-	var script;
-	var form_ids = mailster_recaptcha ? mailster_recaptcha.forms : [];
-	var queue = [];
+	let script;
+	const form_ids = mailster_recaptcha ? mailster_recaptcha.forms : [];
+	const queue = [];
 
 	// legacy forms
-	form_ids.forEach(function (id) {
-		var forms = document.querySelectorAll('.mailster-form-' + id);
-		forms.forEach(init);
-	});
+	form_ids.forEach( function ( id ) {
+		const forms = document.querySelectorAll( '.mailster-form-' + id );
+		forms.forEach( init );
+	} );
 
 	// block forms
-	document.addEventListener('mailster:load', handler);
-	document.addEventListener('mailster:open', handler);
+	document.addEventListener( 'mailster:load', handler );
+	document.addEventListener( 'mailster:open', handler );
 
-	function handler(event) {
-		if (!event.detail.el) return;
-		var formEl = event.detail.el;
-		init(formEl);
+	/**
+	 * Initializes reCAPTCHA when a Mailster form is loaded or opened.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param {CustomEvent} event Mailster load/open event with form detail.
+	 * @return {void}
+	 */
+	function handler( event ) {
+		if ( ! event.detail.el ) {
+			return;
+		}
+		const formEl = event.detail.el;
+		init( formEl );
 	}
 
-	function init(formEl) {
-		if (!script) {
-			script = document.createElement('script');
+	/**
+	 * Loads the Google reCAPTCHA API once and queues the form for tokens.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param {HTMLElement} formEl Form element to protect.
+	 * @return {void}
+	 */
+	function init( formEl ) {
+		if ( ! script ) {
+			script = document.createElement( 'script' );
 			script.type = 'text/javascript';
 			script.onload = function () {
-				queue.forEach(recaptcha);
+				queue.forEach( recaptcha );
 				queue.push = recaptcha;
 			};
 			script.src =
 				'https://www.google.com/recaptcha/api.js?render=' +
 				mailster_recaptcha.public_key;
-			document.getElementsByTagName('head')[0].appendChild(script);
+			document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );
 		}
-		queue.push(formEl);
+		queue.push( formEl );
 	}
 
-	function recaptcha(formEl) {
-		var el = formEl.querySelector('.g-recaptcha-response');
-		if (!el) {
-			el = document.createElement('input');
+	/**
+	 * Executes reCAPTCHA and stores the token on the form.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param {HTMLElement} formEl Form element to attach the token to.
+	 * @return {void}
+	 */
+	function recaptcha( formEl ) {
+		let el = formEl.querySelector( '.g-recaptcha-response' );
+		if ( ! el ) {
+			el = document.createElement( 'input' );
 			el.type = 'hidden';
 			el.name = '_g-recaptcha-response';
 			el.className = 'g-recaptcha-response';
-			formEl.appendChild(el);
+			formEl.appendChild( el );
 		}
 
-		grecaptcha.ready(function () {
+		grecaptcha.ready( function () {
 			grecaptcha
-				.execute(mailster_recaptcha.public_key, {
+				.execute( mailster_recaptcha.public_key, {
 					action: 'submit',
-				})
-				.then(function (token) {
+				} )
+				.then( function ( token ) {
 					el.value = token;
-				});
-		});
+				} );
+		} );
 	}
-})();
+} )();
